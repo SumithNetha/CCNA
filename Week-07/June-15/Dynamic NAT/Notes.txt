@@ -1,0 +1,114 @@
+# CCNA – Week 7 Day 1 – Dynamic NAT
+
+Date: June 15
+Topic: Configuring Dynamic NAT
+
+## Objective
+
+Learn how Dynamic NAT allows multiple internal devices to temporarily borrow public IP addresses using a NAT pool.
+
+---
+
+## Concepts Learned
+
+### What is Dynamic NAT?
+
+Dynamic NAT translates private IP addresses into public IP addresses dynamically using a configured address pool.
+
+Translation Type:
+
+Private → Public (temporary)
+
+Example:
+
+192.168.10.10 → 216.0.5.50
+192.168.10.20 → 216.0.5.51
+
+---
+
+## Dynamic NAT Flow
+
+Inside Network
+↓
+ACL
+↓
+NAT Pool
+↓
+Translation
+↓
+Internet
+
+---
+
+## Key Commands
+
+### Configure Inside / Outside Interfaces
+
+interface g0/0
+ip nat inside
+
+interface g0/1
+ip nat outside
+
+---
+
+### Create ACL
+
+access-list 1 permit 192.168.10.0 0.0.0.255
+
+Meaning:
+Match all hosts in 192.168.10.0/24
+
+---
+
+### Create NAT Pool
+
+ip nat pool cafepublic 216.0.5.50 216.0.5.100 netmask 255.255.255.0
+
+---
+
+### Enable Dynamic NAT
+
+ip nat inside source list 1 pool cafepublic
+
+---
+
+## Verification Commands
+
+show ip nat translations
+
+show ip nat statistics
+
+clear ip nat translation *
+
+---
+
+## Important Learnings
+
+Static NAT:
+One private → One fixed public
+
+Dynamic NAT:
+Many private → Pool of public addresses
+
+PAT:
+Many private → One public IP using ports
+
+---
+
+## Limitation
+
+Dynamic NAT only works while public addresses remain available.
+
+If pool = 51 IPs
+
+Maximum active translations = 51
+
+Device 52 → Internet unavailable
+
+---
+
+## Summary
+
+Dynamic NAT removes manual mapping but still consumes public addresses.
+PAT solves this limitation and is the common production solution.
