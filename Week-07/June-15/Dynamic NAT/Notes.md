@@ -25,7 +25,6 @@ Example:
 192.168.10.20 → 216.0.5.51
 
 ---
-
 ## Dynamic NAT Flow
 
 Inside Network
@@ -38,7 +37,7 @@ Translation
 ↓
 Internet
 
----
+
 
 ## Key Commands
 
@@ -50,7 +49,7 @@ ip nat inside
 interface g0/1
 ip nat outside
 
----
+
 
 ### Create ACL
 
@@ -59,19 +58,18 @@ access-list 1 permit 192.168.10.0 0.0.0.255
 Meaning:
 Match all hosts in 192.168.10.0/24
 
----
+
 
 ### Create NAT Pool
 
 ip nat pool cafepublic 216.0.5.50 216.0.5.100 netmask 255.255.255.0
 
----
 
 ### Enable Dynamic NAT
 
 ip nat inside source list 1 pool cafepublic
 
----
+
 
 ## Verification Commands
 
@@ -82,7 +80,6 @@ show ip nat statistics
 clear ip nat translation *
 
 ---
-
 ## Important Learnings
 
 Static NAT:
