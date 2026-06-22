@@ -1,4 +1,4 @@
-notes.md
+
 
 # Week 7 Day 1 – NAT Overload (PAT)
 
@@ -33,7 +33,7 @@ Example:
 Same public IP.
 Different ports.
 
----
+
 
 ## Dynamic NAT vs PAT
 
@@ -55,25 +55,17 @@ Private → Shared Public
 
 216.0.5.2:30001
 
----
+
 
 ## Why PAT Exists
 
 IPv4 public addresses are limited.
 
-Without PAT:
+Without PAT:  100 Devices  100 Public IPs
 
-# 100 Devices
+With PAT: 100 Devices  1 Public IP
 
-100 Public IPs
 
-With PAT:
-
-# 100 Devices
-
-1 Public IP
-
----
 
 ## Interface Method
 

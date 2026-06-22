@@ -26,6 +26,8 @@ Tasks
 
 [✓] Verify NAT
 
+---
+
 Commands
 
 show ip nat translations
@@ -35,13 +37,3 @@ show ip nat statistics
 Expected Result
 
 Multiple inside devices share one public IP using unique ports.
-
-Screenshots
-
-1_topology.png
-
-2_show_ip_nat_translations.png
-
-3_show_ip_nat_statistics.png
-
-4_successful_ping.png
