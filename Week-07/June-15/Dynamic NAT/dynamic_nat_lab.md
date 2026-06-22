@@ -2,12 +2,14 @@
 
 ## Topology
 
-PC1 -----
-SW ----- R1 ----- ISP
-PC2 -----/
+PC1 -----SW ----- R1 ----- ISP
+          |        |
+          |        |
+          |        R2
+         PC2 
 
 LAN:
-192.168.10.0/24
+192.168.1.0/24
 
 Public Pool:
 216.0.5.50–216.0.5.100
@@ -31,8 +33,8 @@ show ip nat translations
 
 Inside local        Inside global
 
-192.168.10.10       216.0.5.50
-192.168.10.20       216.0.5.51
+192.168.1.50       216.0.5.50
+192.168.1.51       216.0.5.51
 
 ---
 
@@ -40,6 +42,6 @@ Inside local        Inside global
 
 Add another subnet:
 
-192.168.20.0/24
+192.168.2.0/24
 
 Update ACL and verify both networks use NAT.

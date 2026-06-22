@@ -16,7 +16,7 @@ configure terminal
 
 interface gigabitEthernet0/0
 
-ip address 192.168.10.1 255.255.255.0
+ip address 192.168.1.1 255.255.255.0
 
 no shutdown
 
@@ -44,7 +44,7 @@ exit
 
 (Identify private addresses allowed to translate)
 
-access-list 1 permit 192.168.10.0 0.0.0.255
+access-list 1 permit 192.168.1.0 0.0.0.255
 
 exit
 
@@ -76,9 +76,16 @@ copy running-config startup-config
 
 
 ---
-## If adding second network (Fallout Shelter)
+# If adding second network (Fallout Shelter)
 configure terminal
 
-access-list 1 permit 192.168.20.0 0.0.0.255
+access-list 1 permit 192.168.3.0 0.0.0.255
+
+end
+
+# If adding Third network (WAN network)
+configure terminal
+
+access-list 1 permit 192.168.2.0 0.0.0.255
 
 end
