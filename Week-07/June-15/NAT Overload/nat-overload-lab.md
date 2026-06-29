@@ -37,3 +37,4 @@ show ip nat statistics
 Expected Result
 
 Multiple inside devices share one public IP using unique ports.
+---
