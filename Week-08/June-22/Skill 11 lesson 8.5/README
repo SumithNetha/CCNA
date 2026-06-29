@@ -1,0 +1,146 @@
+# Skill 11 Lesson 08.5 – Applying New Castle Rysen Subnet Strategy
+
+## Overview
+
+This lesson demonstrates how to implement a previously designed VLSM addressing scheme on a real Packet Tracer network.
+
+Instead of only calculating subnets, the new addressing plan is deployed by updating router interfaces, switch management interfaces, NAT, DHCP, and verifying end-to-end connectivity.
+
+---
+
+## Learning Objectives
+
+- Apply a VLSM subnet design to a live network
+- Assign logical IP addresses to infrastructure devices
+- Update router interface addressing
+- Reconfigure NAT for the new subnet
+- Configure DHCP for automatic client addressing
+- Update switch management IP addresses
+- Verify network connectivity using Cisco IOS commands
+
+---
+
+## Network Information
+
+| Item | Value |
+|------|-------|
+| LAN Network | 10.0.18.0/26 |
+| Subnet Mask | 255.255.255.192 |
+| Default Gateway | 10.0.18.1 |
+| Public Network | 216.0.5.0/24 |
+
+---
+
+## Repository Structure
+
+```
+
+.
+├── README.md
+├── theory.md
+├── lab.md
+├── topology.png
+├── screenshots/
+└── configs/
+
+```
+
+---
+
+## Files
+
+### theory.md
+
+Contains the theoretical concepts covered in the lesson, including:
+
+- Applying subnet strategies
+- Logical IP addressing
+- Infrastructure address planning
+- DHCP concepts
+- NAT updates
+- Deployment best practices
+
+---
+
+### lab.md
+
+Contains the complete Packet Tracer implementation:
+
+- Router configuration
+- NAT updates
+- DHCP configuration
+- Switch management configuration
+- Verification commands
+- Expected results
+
+---
+
+### configs/
+
+Contains the running configuration of every configured device.
+
+Example:
+
+- cafe01-RT01-running-config.txt
+- cafe01-SW01-running-config.txt
+- cafe01-SW02-running-config.txt
+
+---
+
+### screenshots/
+
+Contains screenshots of:
+
+- Final topology
+- Routing table
+- NAT statistics
+- DHCP operation
+- Ping verification
+- Switch MAC tables
+
+---
+
+## Verification Commands
+
+Router
+
+- show ip interface brief
+- show ip route
+- show ip nat statistics
+- show ip nat translations
+- show access-lists
+- show running-config | include nat
+
+Switch
+
+- show ip interface brief
+- show mac-address-table
+- ping 10.0.18.1
+
+---
+
+## Skills Practiced
+
+- VLSM deployment
+- Router configuration
+- Switch management
+- NAT Overload (PAT)
+- DHCP configuration
+- ACL modification
+- Routing verification
+- Connectivity testing
+- Layer 2 verification
+
+---
+
+## Outcome
+
+Successfully migrated the Castle Rysen District Shop network from the previous addressing scheme to the new **10.0.18.0/26** subnet.
+
+The network now provides:
+
+- Logical infrastructure addressing
+- DHCP client addressing
+- NAT Internet access
+- Proper routing
+- Successful Layer 2 and Layer 3 connectivity

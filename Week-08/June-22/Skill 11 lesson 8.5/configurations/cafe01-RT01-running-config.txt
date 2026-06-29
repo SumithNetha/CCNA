@@ -1,0 +1,26 @@
+hostname cafe01-RT01
+
+interface GigabitEthernet0/0
+ ip address 10.0.18.1 255.255.255.192
+ ip nat inside
+ no shutdown
+
+interface GigabitEthernet0/1
+ ip address 216.0.5.2 255.255.255.252
+ ip nat outside
+ no shutdown
+
+ip nat pool CAFE_PUBLIC 216.0.5.50 216.0.5.100 netmask 255.255.255.0
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+access-list 1 permit 10.0.18.0 0.0.0.63
+
+ip dhcp excluded-address 10.0.18.1 10.0.18.10
+ip dhcp excluded-address 10.0.18.51 10.0.18.63
+
+ip dhcp pool CAFE01
+ network 10.0.18.0 255.255.255.192
+ default-router 10.0.18.1
+ dns-server 1.1.1.1
+
+ip route 0.0.0.0 0.0.0.0 216.0.5.1

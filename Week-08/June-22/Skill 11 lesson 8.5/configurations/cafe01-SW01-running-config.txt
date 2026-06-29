@@ -1,0 +1,7 @@
+hostname cafe01-SW01
+
+interface Vlan1
+ ip address 10.0.18.2 255.255.255.192
+ no shutdown
+
+ip default-gateway 10.0.18.1
