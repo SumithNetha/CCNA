@@ -143,4 +143,4 @@ Fa0/14
 Fa0/15
 ```
 
-Interfaces successfully moved from VLAN 1 to VLAN 20.
+Interfaces successfully moved from VLAN 1 to VLAN 20.![alt text](image.png)

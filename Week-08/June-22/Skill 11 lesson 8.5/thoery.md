@@ -185,3 +185,4 @@ Successful verification confirms that the new addressing plan has been implement
 Applying a subnet strategy transforms a theoretical addressing plan into a functioning network. Every device must be configured to use the new subnet, and related services such as NAT and DHCP must be updated to support the new addressing scheme.
 
 A successful deployment depends not only on correct subnet calculations but also on organized address assignment, proper configuration of supporting services, and thorough verification after implementation. Following a structured deployment process ensures that the network remains scalable, maintainable, and reliable as it grows.
+![alt text](image.png)
