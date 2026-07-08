@@ -784,4 +784,4 @@ These concepts become much easier to understand when failures have visible conse
 - Router interfaces appear red in Packet Tracer because they are administratively down until the **no shutdown** command is issued.
 - Orange links indicate STP is blocking redundant paths to prevent Layer 2 switching loops.
 - Redundant links improve network availability but do not increase bandwidth unless technologies such as **EtherChannel** are implemented.
-- The larger enterprise topology prepares the network for future topics including VLAN implementation, STP optimization, HSRP, EtherChannel, OSPF, Layer 2 security, and enterprise network services.
+- The larger enterprise topology prepares the network for future topics including VLAN implementation, STP optimization, HSRP, EtherChannel, OSPF, Layer 2 security, and enterprise network services
