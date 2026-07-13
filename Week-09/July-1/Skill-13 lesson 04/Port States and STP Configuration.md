@@ -1,0 +1,1396 @@
+# Port States and STP Configuration
+
+## Overview
+
+Spanning Tree Protocol (STP) prevents Layer 2 switching loops by controlling which switch ports are allowed to forward traffic.
+
+Classic STP does **not** allow a newly activated port to immediately begin forwarding frames. The port progresses through several states while STP:
+
+* receives and processes BPDUs
+* identifies the Root Bridge
+* calculates the best path toward the Root Bridge
+* selects Root and Designated Ports
+* blocks redundant paths
+* builds the MAC address table
+* finally allows traffic forwarding
+
+The major disadvantage of classic STP is **slow convergence**.
+
+---
+
+# 1. Classic STP Port States
+
+IEEE 802.1D STP defines five port states:
+
+```text
+Disabled
+Blocking
+Listening
+Learning
+Forwarding
+```
+
+The primary operational transition is:
+
+```text
+Blocking
+   ↓
+Listening
+   ↓
+Learning
+   ↓
+Forwarding
+```
+
+---
+
+# 2. Blocking State
+
+A port enters the Blocking state when STP determines that forwarding through the port could create a Layer 2 loop.
+
+```text
+                ROOT BRIDGE
+                   SW01
+                  /    \
+                 /      \
+                /        \
+             SW02--------SW03
+                       X
+                    BLOCKED
+```
+
+In the Blocking state, the port:
+
+* receives BPDUs
+* does not forward user traffic
+* does not learn MAC addresses
+* prevents Layer 2 loops
+
+The port continues processing BPDUs because the network topology may change and the blocked path may eventually be required.
+
+```text
+Blocking Port
+
+User Frames       → Not Forwarded
+MAC Learning      → No
+BPDU Processing   → Yes
+```
+
+---
+
+# 3. Listening State
+
+When STP determines that a port may become part of the active topology, the port transitions to the Listening state.
+
+```text
+Blocking
+   ↓
+Listening
+```
+
+Default duration:
+
+```text
+15 seconds
+```
+
+During the Listening state, the switch determines:
+
+* the Root Bridge
+* the Root Port
+* Designated Ports
+* ports that must remain blocked
+
+The port:
+
+* sends and receives BPDUs
+* participates in STP calculations
+* does not forward user traffic
+* does not learn MAC addresses
+
+```text
+Listening Port
+
+User Frames       → Not Forwarded
+MAC Learning      → No
+BPDU Processing   → Yes
+```
+
+---
+
+# 4. Learning State
+
+After the Listening state, the port enters the Learning state.
+
+```text
+Listening
+   ↓
+Learning
+```
+
+Default duration:
+
+```text
+15 seconds
+```
+
+The major difference between Listening and Learning is that the switch now begins learning source MAC addresses.
+
+Example:
+
+```text
+Frame arrives on Fa0/1
+
+Source MAC:
+AAAA.AAAA.AAAA
+
+Switch learns:
+
+MAC Address         Interface
+AAAA.AAAA.AAAA      Fa0/1
+```
+
+However, the port still does not forward normal user traffic.
+
+```text
+Learning Port
+
+User Frames       → Not Forwarded
+MAC Learning      → Yes
+BPDU Processing   → Yes
+```
+
+---
+
+# 5. Forwarding State
+
+After the Learning state, the port enters the Forwarding state.
+
+```text
+Learning
+   ↓
+Forwarding
+```
+
+The port now operates normally.
+
+A Forwarding port:
+
+* forwards user traffic
+* learns MAC addresses
+* sends and receives BPDUs
+* participates in STP
+
+```text
+Forwarding Port
+
+User Frames       → Forwarded
+MAC Learning      → Yes
+BPDU Processing   → Yes
+```
+
+---
+
+# 6. STP Port State Comparison
+
+| Port State | Process BPDUs | Learn MAC Addresses | Forward User Traffic |
+| ---------- | ------------- | ------------------- | -------------------- |
+| Blocking   | Yes           | No                  | No                   |
+| Listening  | Yes           | No                  | No                   |
+| Learning   | Yes           | Yes                 | No                   |
+| Forwarding | Yes           | Yes                 | Yes                  |
+| Disabled   | No            | No                  | No                   |
+
+Memory model:
+
+```text
+BLOCKING
+   ↓
+Monitor STP and prevent loops
+
+LISTENING
+   ↓
+Understand the Layer 2 topology
+
+LEARNING
+   ↓
+Build the MAC address table
+
+FORWARDING
+   ↓
+Forward network traffic
+```
+
+---
+
+# 7. Why Classic STP Takes 30 Seconds
+
+The normal transition toward Forwarding is:
+
+```text
+Listening
+15 seconds
+
+     +
+
+Learning
+15 seconds
+
+     =
+
+30 seconds
+```
+
+Visualized:
+
+```text
+Port Becomes Active
+        │
+        ▼
+    LISTENING
+        │
+        │ 15 seconds
+        ▼
+     LEARNING
+        │
+        │ 15 seconds
+        ▼
+    FORWARDING
+
+Total = 30 seconds
+```
+
+An interface can therefore be physically operational while STP prevents it from forwarding Ethernet frames.
+
+```text
+Interface Status: up/up
+
+        ≠
+
+STP Status: Forwarding
+```
+
+---
+
+# 8. Classic STP Timers
+
+Classic STP uses three important timers:
+
+| Timer         | Default Value |
+| ------------- | ------------: |
+| Hello Time    |     2 seconds |
+| Max Age       |    20 seconds |
+| Forward Delay |    15 seconds |
+
+## Hello Time
+
+```text
+Default = 2 seconds
+```
+
+Controls the normal interval between configuration BPDUs generated by the Root Bridge.
+
+---
+
+## Max Age
+
+```text
+Default = 20 seconds
+```
+
+Determines how long STP information can remain valid before it expires.
+
+---
+
+## Forward Delay
+
+```text
+Default = 15 seconds
+```
+
+Controls the duration of both:
+
+```text
+Listening = 15 seconds
+
+Learning = 15 seconds
+```
+
+---
+
+# 9. Why Classic STP Can Take Up to 50 Seconds
+
+In some traditional STP failure scenarios:
+
+```text
+Max Age
+20 seconds
+
+     +
+
+Listening
+15 seconds
+
+     +
+
+Learning
+15 seconds
+
+     =
+
+50 seconds
+```
+
+Visualized:
+
+```text
+Network Failure
+      │
+      ▼
+Wait for STP Information
+to Expire
+      │
+      │ 20 seconds
+      ▼
+LISTENING
+      │
+      │ 15 seconds
+      ▼
+LEARNING
+      │
+      │ 15 seconds
+      ▼
+FORWARDING
+
+Potential Convergence Time
+        =
+50 seconds
+```
+
+This slow convergence is one of the major weaknesses of classic IEEE 802.1D STP.
+
+---
+
+# 10. STP Port Roles vs Port States
+
+Port **roles** and port **states** are different concepts.
+
+## Port Roles
+
+A port role describes:
+
+> What job does this port perform in the STP topology?
+
+Examples:
+
+```text
+Root Port
+
+Designated Port
+
+Alternate Port
+```
+
+## Port States
+
+A port state describes:
+
+> What is the port currently allowed to do?
+
+Examples:
+
+```text
+Blocking
+
+Listening
+
+Learning
+
+Forwarding
+```
+
+Example:
+
+```text
+Fa0/1    Root    FWD
+
+Role  = Root Port
+State = Forwarding
+```
+
+Another example:
+
+```text
+Fa0/2    Altn    BLK
+
+Role  = Alternate Port
+State = Blocking
+```
+
+---
+
+# 11. Per-VLAN Spanning Tree — PVST
+
+Cisco PVST runs a separate STP instance for each VLAN.
+
+```text
+VLAN 1
+   ↓
+STP Instance
+
+VLAN 10
+   ↓
+STP Instance
+
+VLAN 20
+   ↓
+STP Instance
+```
+
+Therefore:
+
+```text
+3 VLANs
+
+=
+
+3 Separate STP Calculations
+```
+
+Each VLAN can have its own:
+
+* Root Bridge
+* Root Ports
+* Designated Ports
+* Alternate/Blocked Ports
+* Layer 2 forwarding topology
+
+---
+
+# 12. Why PVST Is Useful
+
+Consider:
+
+```text
+                    SW01
+                   /    \
+                  /      \
+                 /        \
+              SW02--------SW03
+```
+
+The network contains:
+
+```text
+VLAN 10
+
+VLAN 20
+```
+
+PVST allows:
+
+```text
+VLAN 10 Root Bridge = SW01
+
+VLAN 20 Root Bridge = SW02
+```
+
+Therefore, different VLANs can use different Layer 2 forwarding paths.
+
+```text
+VLAN 10
+   ↓
+Uses one forwarding topology
+
+VLAN 20
+   ↓
+Uses another forwarding topology
+```
+
+This allows a form of Layer 2 traffic load balancing.
+
+---
+
+# 13. Viewing STP Information
+
+Use:
+
+```text
+show spanning-tree
+```
+
+The command displays STP information for all active VLAN instances.
+
+Example:
+
+```text
+VLAN0001
+
+VLAN0010
+
+VLAN0020
+```
+
+To inspect one VLAN:
+
+```text
+show spanning-tree vlan 10
+```
+
+Useful information includes:
+
+* Root ID
+* Bridge ID
+* Root Path Cost
+* Root Port
+* port roles
+* port states
+* STP timers
+
+---
+
+# 14. Understanding the Root ID
+
+Example:
+
+```text
+Root ID    Priority    24577
+           Address     000C.CFDB.2669
+           Cost        19
+           Port        1 (FastEthernet0/1)
+```
+
+This tells the switch:
+
+```text
+Root Bridge Priority
+        =
+24577
+
+Root Bridge MAC Address
+        =
+000C.CFDB.2669
+
+Cost to Reach Root Bridge
+        =
+19
+
+Local Root Port
+        =
+Fa0/1
+```
+
+---
+
+# 15. Identifying the Root Bridge
+
+On the Root Bridge:
+
+```text
+Root ID
+
+and
+
+Bridge ID
+```
+
+will identify the same switch.
+
+Cisco IOS also displays:
+
+```text
+This bridge is the root
+```
+
+Example:
+
+```text
+Root ID    Priority    24577
+           Address     000C.CFDB.2669
+
+This bridge is the root
+
+Bridge ID  Priority    24577
+           Address     000C.CFDB.2669
+```
+
+Therefore:
+
+```text
+Root ID = Bridge ID
+
+        ↓
+
+Local Switch Is Root Bridge
+```
+
+---
+
+# 16. Root Bridge Ports
+
+Every active port on the Root Bridge is a Designated Port.
+
+```text
+                   ROOT BRIDGE
+                      SW01
+
+               DP/FWD       DP/FWD
+                 │             │
+                 │             │
+               SW02----------SW03
+```
+
+Example output:
+
+```text
+Interface    Role    Sts
+
+Fa0/1        Desg    FWD
+
+Fa0/2        Desg    FWD
+
+Fa0/24       Desg    FWD
+```
+
+Where:
+
+```text
+Desg = Designated Port
+
+FWD = Forwarding
+```
+
+---
+
+# 17. Non-Root Switch Port Selection
+
+Consider two parallel links:
+
+```text
+                    SW01
+                 ROOT BRIDGE
+
+                /          \
+               /            \
+            Fa0/1          Fa0/2
+              │              │
+              │              │
+            Fa0/1          Fa0/2
+               \            /
+                \          /
+
+                    SW02
+                  NON-ROOT
+```
+
+STP may select:
+
+```text
+Fa0/1    Root    FWD
+
+Fa0/2    Altn    BLK
+```
+
+Meaning:
+
+```text
+Fa0/1
+
+Role  = Root Port
+State = Forwarding
+```
+
+and:
+
+```text
+Fa0/2
+
+Role  = Alternate Port
+State = Blocking
+```
+
+Result:
+
+```text
+                    SW01
+                 ROOT BRIDGE
+
+               DP/FWD      DP/FWD
+                 │            │
+                 │            │
+               RP/FWD      ALT/BLK
+
+                    SW02
+```
+
+STP blocks one redundant path and prevents a Layer 2 loop.
+
+---
+
+# 18. Equal-Cost Parallel Link Selection
+
+Suppose:
+
+```text
+Fa0/1 Cost = 19
+
+Fa0/2 Cost = 19
+```
+
+Both paths have equal Root Path Cost.
+
+STP must use a tiebreaker.
+
+If both links connect to the same upstream switch, STP eventually compares the sender's Port ID.
+
+Example:
+
+```text
+Fa0/1 = 128.1
+
+Fa0/2 = 128.2
+```
+
+Lower value wins:
+
+```text
+128.1 < 128.2
+```
+
+Therefore:
+
+```text
+Fa0/1 → Root Port → Forwarding
+
+Fa0/2 → Alternate Port → Blocking
+```
+
+---
+
+# 19. Extended System ID
+
+The default STP bridge priority is:
+
+```text
+32768
+```
+
+However, `show spanning-tree` may display:
+
+```text
+32769
+```
+
+for VLAN 1.
+
+Why?
+
+Because of the Extended System ID.
+
+Conceptually:
+
+```text
+Displayed Priority
+
+=
+
+Configured Bridge Priority
+
++
+
+VLAN ID
+```
+
+Example:
+
+```text
+VLAN 1
+
+32768 + 1
+
+=
+
+32769
+```
+
+For VLAN 10:
+
+```text
+32768 + 10
+
+=
+
+32778
+```
+
+For VLAN 20:
+
+```text
+32768 + 20
+
+=
+
+32788
+```
+
+---
+
+# 20. Example from the Castle Rysen Lab
+
+The lab output showed:
+
+```text
+Bridge ID Priority 24577
+
+(priority 24576 sys-id-ext 1)
+```
+
+Breakdown:
+
+```text
+Configured Priority = 24576
+
+VLAN ID              = 1
+
+Displayed Priority   = 24577
+```
+
+Calculation:
+
+```text
+24576 + 1 = 24577
+```
+
+For VLAN 10:
+
+```text
+24576 + 10 = 24586
+```
+
+This confirms that PVST maintains a separate STP instance for each VLAN.
+
+---
+
+# 21. STP Priority Values
+
+STP priority must be configured in increments of:
+
+```text
+4096
+```
+
+Valid values include:
+
+```text
+0
+4096
+8192
+12288
+16384
+20480
+24576
+28672
+32768
+36864
+40960
+45056
+49152
+53248
+57344
+61440
+```
+
+Lower priority is preferred during Root Bridge election.
+
+```text
+4096 < 32768
+```
+
+Therefore, the switch with priority `4096` defeats a switch using the default priority `32768`.
+
+---
+
+# 22. Why Root Bridge Selection Should Be Configured
+
+If all switches use the default priority:
+
+```text
+SW01 = 32768
+
+SW02 = 32768
+
+SW03 = 32768
+```
+
+STP uses the lowest MAC address as the tiebreaker.
+
+This could cause an inappropriate access-layer switch to become the Root Bridge.
+
+```text
+                    CORE
+                      │
+                      │
+                DISTRIBUTION
+                      │
+                      │
+                  ACCESS SW
+                  ROOT BRIDGE
+```
+
+This is poor enterprise network design.
+
+Root Bridge placement should be intentional and predictable.
+
+---
+
+# 23. Manually Configuring STP Priority
+
+Command:
+
+```text
+spanning-tree vlan 10 priority 4096
+```
+
+Example:
+
+```text
+SW01(config)# spanning-tree vlan 10 priority 4096
+```
+
+If other switches use:
+
+```text
+32768
+```
+
+then:
+
+```text
+4096 < 32768
+```
+
+SW01 becomes the preferred Root Bridge.
+
+---
+
+# 24. Configuring Root Primary
+
+Cisco provides a shortcut:
+
+```text
+spanning-tree vlan 10 root primary
+```
+
+Example:
+
+```text
+SW01(config)# spanning-tree vlan 10 root primary
+```
+
+The command adjusts the local switch priority to make the switch the preferred Root Bridge.
+
+`root primary` is a configuration macro, not a continuously operating root-election protocol.
+
+---
+
+# 25. Configuring Root Secondary
+
+Command:
+
+```text
+spanning-tree vlan 10 root secondary
+```
+
+Example:
+
+```text
+SW02(config)# spanning-tree vlan 10 root secondary
+```
+
+Design:
+
+```text
+                    SW01
+                 ROOT PRIMARY
+                      │
+                      │
+                    SW02
+                ROOT SECONDARY
+```
+
+If SW01 fails, SW02 is intentionally positioned to become the new Root Bridge.
+
+---
+
+# 26. Configuring Multiple VLANs
+
+Example:
+
+```text
+spanning-tree vlan 10,20,30 root primary
+```
+
+This configures the switch as the preferred Root Bridge for:
+
+```text
+VLAN 10
+
+VLAN 20
+
+VLAN 30
+```
+
+A range can also be used:
+
+```text
+spanning-tree vlan 10-30 root primary
+```
+
+However:
+
+```text
+10-30
+```
+
+means every VLAN from VLAN 10 through VLAN 30.
+
+---
+
+# 27. PVST Enterprise Load Balancing
+
+Consider two distribution switches:
+
+```text
+                  DIST-SW01
+                      ║
+                      ║
+                  DIST-SW02
+
+                    /    \
+                   /      \
+                ACCESS SWITCHES
+```
+
+VLANs:
+
+```text
+VLAN 10 → Employees
+
+VLAN 20 → Servers
+
+VLAN 30 → Management
+
+VLAN 40 → Voice
+```
+
+Configure DIST-SW01:
+
+```text
+spanning-tree vlan 10,20 root primary
+spanning-tree vlan 30,40 root secondary
+```
+
+Configure DIST-SW02:
+
+```text
+spanning-tree vlan 30,40 root primary
+spanning-tree vlan 10,20 root secondary
+```
+
+Result:
+
+```text
+DIST-SW01
+
+Primary Root:
+VLAN 10
+VLAN 20
+
+Secondary Root:
+VLAN 30
+VLAN 40
+```
+
+```text
+DIST-SW02
+
+Primary Root:
+VLAN 30
+VLAN 40
+
+Secondary Root:
+VLAN 10
+VLAN 20
+```
+
+This provides:
+
+* deterministic Root Bridge placement
+* redundancy
+* predictable failover
+* better utilization of network infrastructure
+* per-VLAN Layer 2 traffic engineering
+
+---
+
+# 28. Castle Rysen STP Design
+
+The Castle Rysen network requires multiple network segments and optimized loop prevention.
+
+Example VLAN design:
+
+```text
+VLAN 10 → Management
+
+VLAN 20 → Internal
+
+VLAN 30 → Cameras
+
+VLAN 40 → Guest
+```
+
+Possible STP design:
+
+```text
+DIST-SW01
+
+VLAN 10,20 → Root Primary
+VLAN 30,40 → Root Secondary
+```
+
+```text
+DIST-SW02
+
+VLAN 30,40 → Root Primary
+VLAN 10,20 → Root Secondary
+```
+
+Configuration:
+
+```text
+DIST-SW01(config)#
+spanning-tree vlan 10,20 root primary
+spanning-tree vlan 30,40 root secondary
+```
+
+```text
+DIST-SW02(config)#
+spanning-tree vlan 30,40 root primary
+spanning-tree vlan 10,20 root secondary
+```
+
+This provides:
+
+* STP loop prevention
+* predictable Root Bridge placement
+* redundant switching paths
+* per-VLAN traffic engineering
+* improved infrastructure utilization
+
+---
+
+# 29. STP and Redundant Physical Links
+
+Consider two parallel FastEthernet links:
+
+```text
+              SW01
+               ║
+               ║
+              SW02
+```
+
+Without EtherChannel, STP sees:
+
+```text
+Link 1 → Separate Layer 2 Path
+
+Link 2 → Separate Layer 2 Path
+```
+
+To prevent a loop:
+
+```text
+Fa0/1 → Forwarding
+
+Fa0/2 → Blocking
+```
+
+Therefore, two physical `100 Mbps` links do not automatically provide `200 Mbps` of usable bandwidth for a single traffic flow.
+
+```text
+100 Mbps Link
+      +
+100 Mbps Link
+
+      ↓
+
+STP Blocks One Path
+```
+
+The blocked link provides redundancy rather than simultaneous forwarding capacity.
+
+This limitation leads into EtherChannel, where multiple physical links can be combined into one logical Port-Channel.
+
+---
+
+# 30. Verification Commands
+
+Display all STP instances:
+
+```text
+show spanning-tree
+```
+
+Display STP for a specific VLAN:
+
+```text
+show spanning-tree vlan 10
+```
+
+Identify the Root Bridge:
+
+```text
+show spanning-tree root
+```
+
+Inspect STP information for an interface:
+
+```text
+show spanning-tree interface fa0/1
+```
+
+Inspect VLAN information:
+
+```text
+show vlan brief
+```
+
+Inspect trunk interfaces:
+
+```text
+show interfaces trunk
+```
+
+---
+
+# 31. Complete STP Workflow
+
+```text
+REDUNDANT LAYER 2 LINKS
+          │
+          ▼
+ROOT BRIDGE ELECTION
+          │
+          ▼
+ROOT PORT SELECTION
+          │
+          ▼
+DESIGNATED PORT SELECTION
+          │
+          ▼
+REDUNDANT PORT BLOCKING
+          │
+          ▼
+PORT STATE TRANSITION
+          │
+          ├── BLOCKING
+          │
+          ├── LISTENING
+          │
+          ├── LEARNING
+          │
+          └── FORWARDING
+          │
+          ▼
+PVST PERFORMS THIS PROCESS
+SEPARATELY FOR EACH VLAN
+          │
+          ▼
+ADMINISTRATOR CONFIGURES
+ROOT PRIMARY AND SECONDARY
+          │
+          ▼
+PREDICTABLE AND REDUNDANT
+LAYER 2 NETWORK
+```
+
+# Key Takeaways
+
+```text
+Classic STP States:
+
+Blocking
+   ↓
+Listening
+   ↓
+Learning
+   ↓
+Forwarding
+```
+
+```text
+Classic STP Timers:
+
+Hello Time    = 2 seconds
+
+Max Age       = 20 seconds
+
+Forward Delay = 15 seconds
+```
+
+```text
+Normal Listening + Learning Delay:
+
+15 + 15 = 30 seconds
+```
+
+```text
+Potential Traditional STP Convergence:
+
+20 + 15 + 15 = 50 seconds
+```
+
+```text
+PVST:
+
+One STP Instance Per VLAN
+```
+
+```text
+Default Bridge Priority:
+
+32768
+```
+
+```text
+Displayed Priority:
+
+Configured Priority + VLAN ID
+```
+
+```text
+Priority Increment:
+
+4096
+```
+
+```text
+Manual Root Configuration:
+
+spanning-tree vlan 10 priority 4096
+```
+
+```text
+Preferred Root:
+
+spanning-tree vlan 10 root primary
+```
+
+```text
+Backup Root:
+
+spanning-tree vlan 10 root secondary
+```
+
+> **The central design principle is that STP should not be left to select the Root Bridge based on arbitrary MAC addresses. In a properly designed enterprise network, Root Bridge placement, backup Root Bridge placement, redundant paths, and per-VLAN forwarding topologies are intentionally engineered for predictable traffic flow and failure recovery.**
