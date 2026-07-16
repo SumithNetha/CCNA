@@ -564,4 +564,4 @@ Redundancy Maintained
 - EtherChannel formation methods:
   - **Static** (manual)
   - **PAgP** (Cisco proprietary)
-  - **LACP** (IEEE 802.1AX, recommended)
+  - **LACP** ((IEEE 802.1AX, recommended))
