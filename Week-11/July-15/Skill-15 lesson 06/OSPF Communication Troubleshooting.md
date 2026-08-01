@@ -173,6 +173,43 @@ On multi-access networks (e.g., Ethernet switches), forming full adjacencies bet
 
 ---
 
+### Step-by-Step OSPF Troubleshooting Workflow
+
+                OSPF Not Working
+                        │
+                        ▼
+           Are Interfaces Up/Up?
+                        │
+             ┌──────────┴──────────┐
+             │                     │
+            No                    Yes
+             │                     │
+     Fix Physical Issue            ▼
+                        show ip ospf neighbor
+                                  │
+                     ┌────────────┴────────────┐
+                     │                         │
+              No Neighbors               Neighbors Present
+                     │                         │
+                     ▼                         ▼
+          Check Compatibility          Check Neighbor State
+        • Subnet Mask                  • Down
+        • Area ID                      • Init
+        • Hello/Dead Timers            • 2-Way
+        • Authentication               • ExStart
+        • Network Type                 • Exchange
+        • Stub Flag                    • Loading
+                                       • Full
+                                              │
+                                              ▼
+                              If Full but Routes Missing
+                                              │
+                                              ▼
+                               show ip ospf database
+                                              │
+                                              ▼
+                                 show ip route ospf
+
 ## 📌 Summary Checklist for Troubleshooting OSPF
 
 1. **Are interfaces up/up?** Check `show ip interface brief`.
