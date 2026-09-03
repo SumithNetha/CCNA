@@ -2,8 +2,6 @@
 
 ## Skill 19 — Understanding Types of Security Threats
 
-> **Git-ready CCNA Study Notes**
-> Source: NetworkChuck Academy — Skill 19 Lesson 02. 
 
 ---
 
