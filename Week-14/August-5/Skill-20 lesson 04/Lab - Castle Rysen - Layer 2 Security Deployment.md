@@ -8,6 +8,7 @@ The important part is not just the commands. The lab demonstrates how the three 
 
 ---
 ![alt text](image-1.png)
+![alt text](image-2.png)
 
 # 1. Lab Objective
 
