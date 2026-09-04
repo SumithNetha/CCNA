@@ -7,6 +7,7 @@ This lab takes the Layer 2 security policy and applies it to the Castle Rysen sw
 The important part is not just the commands. The lab demonstrates how the three controls fit together and how to verify whether the intended security policy is actually being enforced. 
 
 ---
+![alt text](image-1.png)
 
 # 1. Lab Objective
 
