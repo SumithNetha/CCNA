@@ -1,47 +1,503 @@
-What Now?
-So...What Now?
-This is always the awkward lesson for me, because once I dump a bunch of wireless fundamentals on the table, the obvious question is, "Okay... what now?" And here's the honest answer. The CCNA doesn't go super deep into wireless configuration on purpose. Cisco knows that the moment they really crack that door open, they're opening Pandora's box, because wireless can get deep fast.
+# Skill 25 — Lesson 05: What Now?
+
+## 1. Core Message
+
+The purpose of this lesson is **not to teach more wireless configuration commands**. It is to establish the correct mindset for working with wireless networks.
+
+The CCNA intentionally does not go extremely deep into wireless configuration because wireless quickly becomes a specialized field involving many layers of RF and design considerations.
+
+The key takeaway is:
+
+> **Wireless networking is a different medium with different design rules—not simply Ethernet with antennas.**
+
+---
+
+# 2. Wireless ≠ Ethernet with Antennas
+
+A common mistake is to think:
+
+**Ethernet**
+→ cable → switch → predictable path
+
+**Wireless**
+→ same thing, except without the cable
+
+That mental model is wrong.
+
+Wireless sends data through a shared physical environment where many things can affect transmission.
+
+### Wired networking
+
+Generally provides:
+
+* Physical cables
+* Defined switch ports
+* Controlled transmission paths
+* Relatively predictable connectivity
+* Less exposure to environmental interference
+
+### Wireless networking
+
+Must deal with:
+
+* Walls
+* Windows
+* Trees
+* Weather
+* Other access points
+* Microwave ovens
+* Bluetooth devices
+* Other sources of RF interference
+* Client density
+* Signal propagation
+
+Therefore:
+
+**Wireless design ≠ simply providing coverage.**
+
+It also involves:
+
+**Coverage + interference management + capacity + placement + performance**
+
+---
+
+# 3. Coverage Does NOT Equal Performance
+
+One of the most important concepts from this lesson:
+
+> **Having a strong wireless signal does not automatically mean having good wireless performance.**
+
+You can have excellent coverage while still experiencing:
+
+* Poor throughput
+* Packet loss
+* Interference
+* Congestion
+* High latency
+* Poor user experience
+
+For example:
+
+```text
+AP
+│
+├── Strong signal
+│
+├── Many clients
+│
+├── Channel interference
+│
+└── Poor performance
+```
+
+Therefore, simply looking at the Wi-Fi signal bars on your phone is not enough to determine whether the network is healthy.
+
+---
+
+# 4. Don't Just "Throw APs on the Ceiling"
+
+A common beginner approach is:
+
+> "Put an access point every few hundred feet and we're done."
+
+That's **not wireless design**.
+
+Wireless AP placement needs to consider the actual environment.
+
+Important factors include:
+
+* Building layout
+* Walls and other physical obstacles
+* Client locations
+* Client density
+* Interference
+* Channel usage
+* AP placement
+* Transmit power
+* Required coverage
+* Expected performance
+
+The lesson's fundamental warning is:
+
+> **Coverage alone doesn't solve the user experience.**
+
+---
+
+# 5. Why Wireless Is More Complex
+
+Wireless can appear simple because almost everyone uses Wi-Fi.
+
+But using Wi-Fi and designing Wi-Fi are very different skills.
+
+A useful analogy from the lesson is:
+
+> Driving a car doesn't mean you can rebuild an engine.
+
+Likewise:
+
+**Using Wi-Fi ≠ understanding wireless network design.**
+
+A network engineer needs to understand that wireless problems can have causes that aren't obvious from the network configuration itself.
+
+For example:
+
+```text
+User reports:
+"Wi-Fi is slow."
+
+Possible causes:
+
+        ┌── Weak signal
+        ├── RF interference
+        ├── Channel congestion
+        ├── Too many clients
+        ├── Poor AP placement
+        ├── Physical obstacles
+        └── Environmental conditions
+```
+
+This is why troubleshooting wireless requires a different mindset.
+
+---
+
+# 6. Respect Wireless Complexity
+
+The lesson doesn't expect you to become a wireless specialist immediately.
+
+Instead, you should leave this section understanding:
+
+* Wireless requires planning.
+* Wireless requires testing.
+* Signal strength isn't the same as performance.
+* Coverage isn't the only design objective.
+* RF environments can be complicated.
+* Wireless is a specialization.
+
+The important mindset shift is:
+
+> **"There is much more happening in wireless than I initially thought."**
+
+That awareness can prevent poor network design decisions.
+
+---
+
+# 7. Learn Wireless by Building
+
+The recommended approach is:
+
+**Build → Test → Observe → Adjust → Test again**
+
+Instead of only memorizing wireless theory, create a real wireless network and observe its behavior.
+
+For example:
+
+```text
+        BUILD
+          ↓
+        TEST
+          ↓
+       OBSERVE
+          ↓
+       ADJUST
+          ↓
+        TEST
+          ↓
+      EXPERIENCE
+```
+
+You can experiment with:
+
+* AP placement
+* Transmit power
+* Channel selection
+* Physical obstacles
+* Client locations
+* Network layout
+
+Then observe what happens.
+
+---
+
+# 8. Practical Wireless Exercise
+
+A useful real-world exercise is to take a place you actually care about:
+
+* Home
+* Apartment
+* Office
+* Church
+* Lab
+
+Then design or improve its Wi-Fi.
+
+For example:
+
+### Step 1 — Place an AP
+
+Install the AP in a reasonable location.
+
+### Step 2 — Walk around
+
+Move through the building with a:
+
+* Phone
+* Laptop
+* Wireless analysis tool
+
+Observe how wireless performance changes.
+
+### Step 3 — Identify problem areas
+
+Look for areas where:
+
+* Signal changes
+* Performance drops
+* Interference appears
+* Clients struggle to maintain connectivity
+
+### Step 4 — Change something
+
+For example:
+
+```text
+Move AP
+    ↓
+Test
+
+Change channel
+    ↓
+Test
+
+Change placement
+    ↓
+Test
+
+Adjust power
+    ↓
+Test
+```
+
+### Step 5 — Compare results
+
+The goal isn't simply:
+
+> "Do I have Wi-Fi?"
+
+The goal is:
+
+> **"What design produces the best wireless experience?"**
+
+---
+
+# 9. NetworkChuck Coffee — Real-World Application
+
+This becomes especially important in the **NetworkChuck/Castle Rysen Coffee** scenario.
+
+The coffee shop isn't just providing Internet access.
+
+A shop could have:
+
+* Customers
+* Point-of-sale systems
+* Staff devices
+* Inventory scanners
+* Cameras
+* Guest Wi-Fi
+* Other business systems
+
+All of these exist within the same physical environment.
+
+So wireless design affects the actual business.
+
+### Poor wireless design
+
+```text
+Poor Wi-Fi
+    ↓
+Slow/unstable connectivity
+    ↓
+POS problems
+    ↓
+Payment/check-out delays
+    ↓
+Frustrated customers
+    ↓
+Lost revenue
+```
+
+Therefore:
+
+> **Network performance is directly connected to business performance.**
+
+A wireless problem isn't necessarily just a technical inconvenience.
+
+It can become a **business problem**.
+
+---
+
+# 10. Castle Rysen Coffee Requirements
+
+The RFP reinforces why wireless design matters.
+
+The Castle Rysen Coffee project requires wireless infrastructure, including **access points and controllers**, while supporting connectivity across the organization's different locations. 
+
+The RFP specifically calls for:
+
+* Wireless infrastructure
+* Access points
+* Controllers
+* WLAN components
+* Wireless security
+* Secure remote access/VPNs
+* Resilient Internet connectivity
 
 
-I hope you felt that as we went through this. I was probably giving off that vibe of, "Yeah, I could keep talking about this forever," because I could. Wireless is one of those worlds where the more you learn, the more you realize there are layers under layers under layers. It's wicked cool, but it's also a reminder that you are not looking at a simple plug-it-in-and-walk-away technology.
 
-Wireless is NOT Ethernet with antennas
-Here's the thing. A lot of people unconsciously treat wireless like it's just Ethernet, but in the air. That's the trap. In wired networking, you've got a controlled environment, cables, ports, switches, clean paths, and way less chaos. In wireless, you're literally throwing data into the air and hoping it survives the trip through a battlefield.
+And the district shop environment must support multiple types of devices and services while maintaining network segmentation and security. 
 
-And I mean that almost literally. You're fighting walls, windows, trees, weather, other access points, microwaves, Bluetooth devices, and interference from stuff that isn't even part of your WiFi network. Right? That's the part I really want parked in your brain. Wireless is not just about coverage, it's about design, interference management, and understanding that packet loss is part of the game.
+So when designing wireless for Castle Rysen, the question isn't merely:
 
-Wireless isn't "broken Ethernet." It's a different medium with different rules, different problems, and a very different design mindset. Once you see that, your expectations change, and that's huge.
+> "Where can I get Wi-Fi?"
 
-So if you're walking away from this series with one big mindset shift, let it be this: don't assume you can slap a few WAPs, wireless access points, on the ceiling every few hundred feet and call it done. That's not design. That's hope. And hope is not a network strategy, right?
+It is:
 
-The real takeaway
-If I'm being honest, the "what now" is less about memorizing more theory and more about learning to respect the complexity. That's the win. If you now understand that wireless requires planning, that signal strength isn't the same thing as performance, and that coverage alone doesn't solve user experience, then boom, you've already taken a huge step.
+> **"How do I provide reliable, secure wireless connectivity that supports the business?"**
 
-Hang on, sidebar for a moment. This is one of those areas where people can get themselves in trouble because wireless seems easy from the outside. Everybody uses WiFi, so everybody thinks they understand WiFi. That's like saying you drive a car, therefore you can rebuild an engine. Okay, sidebar done.
+---
 
+# 11. The Wireless Design Mindset
 
-What I want you to do now is keep the door open. You don't need to become a wireless engineer tomorrow. You don't need to dive into every RF, radio frequency, design principle this second. But you do need to know enough to say, "Oh wow, there is way more going on here than I thought." That awareness alone will save you from making some truly absurd design decisions later.
+Think about wireless in terms of **three major questions**:
 
-Give it a go
-My actual advice? Go build something. Seriously. If you've got a house, apartment, lab, church, office, whatever, and you have a chance to design or improve a wireless network, do it! That is where all of this starts becoming real. You can read about channel overlap and interference all day long, but the moment you walk around a building with a phone or laptop and watch signal quality change, it clicks.
+### ① Where do users need connectivity?
 
-I've done this myself in places that mattered to me. I set up the wireless network at my church, and every Sunday I walk in, see those access points doing their thing, and I get that little nerd smile on my face. I'm like, look at those glowing little guys, just quietly making everything work. There's something satisfying about building a network that people depend on and then watching it hold up in the real world.
+This determines your **coverage requirements**.
 
-And for home or small business gear, I like using Ubiquiti a lot because it's affordable and gives you a lot for the money. That's not me saying it's the only answer. It's me saying it's a great way to get hands-on experience without needing a giant enterprise budget. If you can build a sweet wireless setup in your house and learn how placement, power, and layout affect performance, you're learning the right lessons.
+### ② How many users/devices will be there?
 
-REAL WORLD TIP: If you want real wireless experience, don't start by chasing certifications or memorizing every RF term. Start by designing coverage for a place you actually care about, your house, your church, your office. Then test it, adjust it, and watch what changes. That feedback loop teaches you more than a stack of theory ever will.
+This determines your **capacity and density requirements**.
 
-The Value for NetworkChuck Coffee
-Now let me put this all together with NetworkChuck Coffee. If we're building WiFi for our shop, we can't just think, "Customers need internet, toss an AP in the back." No way. We have customers, point of sale systems, staff devices, maybe inventory scanners, maybe cameras, maybe guest WiFi, all competing in the same physical space. A bad wireless design doesn't just mean weak bars on a phone. It can mean slower checkouts, broken payments, frustrated customers, and lost money.
+### ③ What could interfere with communication?
 
+This determines your **RF/design considerations**.
 
-That's why this matters. The business side and the tech side are tied together. If our morning rush hits and wireless falls apart, that's not an academic problem, right? That's espresso not getting sold. That's NetworkChuck Coffee losing cash because somebody treated WiFi like an afterthought.
+So:
 
-So if this lesson feels a little less like "here's the exact next command to type" and a little more like "here's the mindset you need," that's intentional. This is me handing you the map and saying, okay, now you know the terrain is rough. You're not walking into this blind anymore.
+```text
+Wireless Design
+       │
+       ├── Coverage
+       │
+       ├── Capacity
+       │
+       ├── Interference
+       │
+       ├── AP Placement
+       │
+       └── Performance
+```
 
-Where you go from here
-If you want to keep going, the next step is simple. Build. Test. Observe. Move an access point a few feet and see what happens. Change a channel and see what improves. Walk the space. Think about walls, bodies, glass, interference, and density. That's where wireless stops being theory and starts becoming skill.
+Don't reduce wireless design to:
 
-And that's really my answer to "what now?" Park the big concepts in your head, respect the challenge, and then get your hands dirty. You don't need to know everything today, but you do need to know this is a specialization, and a very real one.
+```text
+"Do I have enough signal?"
+```
 
+---
 
+# 12. What You Should Do Next
+
+The lesson's recommended path is straightforward:
+
+### Build
+
+Create a wireless environment.
+
+### Test
+
+Measure how it performs.
+
+### Observe
+
+Walk around and look for changes.
+
+### Adjust
+
+Change placement, channels, power, etc.
+
+### Repeat
+
+See how your changes affect the network.
+
+This is where wireless changes from **theory → practical networking skill**.
+
+---
+
+# 13. CCNA Exam Perspective
+
+For CCNA purposes, the important lesson isn't to memorize every RF engineering principle.
+
+You should understand the **conceptual distinction**:
+
+| Concept         | Wired                        | Wireless                            |
+| --------------- | ---------------------------- | ----------------------------------- |
+| Medium          | Physical cable               | Radio/RF                            |
+| Environment     | More controlled              | Shared/variable                     |
+| Interference    | Generally lower              | Significant consideration           |
+| Design          | Cabling/ports/topology       | RF + placement + channels + density |
+| Coverage        | Cable reaches endpoint       | Signal propagation matters          |
+| Performance     | Relatively predictable       | Highly environment-dependent        |
+| Troubleshooting | Often physical/configuration | Physical + RF + configuration       |
+
+The big takeaway:
+
+> **Wireless is a specialized networking discipline.**
+
+---
+
+# 14. Key Takeaways
+
+### Remember these
+
+1. **Wireless is not Ethernet with antennas.**
+2. Wireless operates in a much less controlled environment.
+3. **Coverage does not equal performance.**
+4. Strong signal does not automatically mean good throughput.
+5. AP placement should be **designed**, not guessed.
+6. Walls, interference, devices, and client density affect wireless.
+7. Wireless design must consider more than signal strength.
+8. Real-world experimentation is one of the best ways to learn.
+9. Use the cycle **Build → Test → Observe → Adjust**.
+10. In a business network, wireless problems can directly become **business problems**.
+11. You don't need to become a wireless engineer immediately.
+12. But you should recognize when a wireless problem requires deeper RF expertise.
+
+---
+
+## 🧠 One-Minute Revision
+
+```text
+                 WIRELESS
+                    │
+          ┌─────────┴─────────┐
+          ↓                   ↓
+       COVERAGE           PERFORMANCE
+          │                   │
+       AP placement       Interference
+       Obstacles          Client density
+       Signal             Channels
+                           Capacity
+          └─────────┬─────────┘
+                    ↓
+              GOOD DESIGN
+                    │
+          Build → Test → Observe
+                    ↓
+                 Adjust
+```
+
+**The most important sentence from this lesson:**
+
+> **Don't treat wireless as broken Ethernet. It's a different medium with different rules and a different design mindset.**
+
+This completes **Skill 25 — Wireless**. Your next topic on August 26 is **Skill 26: Network Automation and Programmability**, beginning with why network automation matters. Your study plan places that immediately after this lesson. 
